@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+            <title>$!title.text</title>
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <meta name="description" content="">
+                    <!-- Bootstrap -->
+                    <link href="css/bootstrap.min.css" rel="stylesheet" />
+                    <link href="css/bootstrap-responsive.min.css" rel="stylesheet" />
+                    <link rel="stylesheet"  href="css/bootstrap-datetimepicker.min.css" />
+                    <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+                    <script src="js/bootstrap.min.js"></script>
+                    <script src="js/bootstrap-datepicker.js"></script>
+                    <script 
+                        src="js/Highcharts-3.0.2/js/highcharts.js"></script>
+                        <script 
+                            src="js/Highcharts-3.0.2/js/themes/gray.js"></script>
+                            <script type="text/javascript"
+                                src="js/Highcharts-3.0.2/js/modules/exporting.js"></script>
+                                <script type="text/javascript">
+                                    var chart;
+                                    $(document).ready(
+                                    function() {
+                                    chart = new Highcharts.Chart({
+                                    chart: {
+                                    type: 'spline',
+                                    renderTo: 'chart'
+                                    },
+                                    title: {
+                                    text: '$!title.text',
+                                    },
+                                    subtitle: {  
+                                    text: '$!subTitle.text',//副标题 
+                                    }, 
+                                    xAxis: {
+                                    #if($xAxis.type) 
+                                        type:'$!xAxis.type'
+                                    #end
+                                    },
+                                    yAxis: {
+                                    title: {
+                                    text: '$!yAxis.title.text'
+                                    }
+                                    #if($yAxis.min)
+                                        ,min: $!yAxis.min
+                                    #end 
+                                    },
+                                    tooltip: {
+                                    shared: true
+                                    },
+                                    credits: { //设置右下角的标记
+                                    enabled: true,      		//是否显示版权信息
+                                    text: "easymetrics",          //显示的文字
+                                    href: 'http://github.com/archibald2012/easymetrics' //路径
+                                    },
+                                    series: $!seriesOptions
+                                    });
+                                    $('#datepicker').datepicker().on('changeDate', function(ev){
+                                    window.location.href='index.do?id='+$id+'&date='+ $('#reportDate').val();
+                                    });
+                                    });
+                                </script>
+</head>
+<body>
+    <div class="container">
+        <div class="navbar navbar-inverse navbar-fixed-top">
+            <div class="navbar-inner">
+                <div class="nav-collapse collapse navbar-responsive-collapse">
+                    <ul class="nav">
+                        #foreach($e in $metricsReport.entrySet())  
+                            <li class="dropdown">
+                                <a class="dropdown-toggle"
+                                    data-toggle="dropdown"
+                                    href="#">
+                                    ${e.key}
+                                    <b class="caret"></b>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    #foreach($report in ${e.value})
+                                        <li >
+                                            <a href="/index.do?id=$report.reportId&date=$!{reportDate}">$!report.reportName</a>
+                                        </li>
+                                    #end
+                                </ul>
+                            </li>
+                        #end
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <br/>
+        <br/>
+        <br/>
+            <div class="input-append date" id="datepicker" data-date="$!{reportDate}" data-date-format="yyyy-mm-dd">
+                <input id="reportDate" size="16" type="text" value="$!{reportDate}" readonly>
+                    <span class="add-on">
+                        <i class="icon-calendar"></i>
+                    </span>
+                </div>
+            <br/>
+            <div id="chart" />
+        </div>
+</body>
+</html>
